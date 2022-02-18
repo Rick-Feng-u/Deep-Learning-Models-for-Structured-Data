@@ -3,7 +3,12 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import json
 from networkx.drawing.nx_pydot import graphviz_layout
-from seq_clean_up import normalizeString
+import re
+    
+def normalizeString(s):
+    s = re.sub(r"([.!?])", r" \1", s)
+    s = re.sub(r"[^a-zA-Z.!?]+", r" ", s)
+    return s
 
 def xml_to_prufer(xml_path) -> (list):
     tree = ET.parse(xml_path)
@@ -46,7 +51,7 @@ def xml_to_prufer(xml_path) -> (list):
     nx_tree = nx.Graph(edges)
     pos = pos = graphviz_layout(nx_tree, prog="dot")
     nx.draw(nx_tree, pos)
-    #plt.show()
+    plt.show()
     
     sequence = nx.to_prufer_sequence(nx_tree)
     #print(sequence)
@@ -61,6 +66,3 @@ def xml_to_prufer(xml_path) -> (list):
     
     #print(output_sequence)
     return output_sequence
-
-if __name__ == '__main__':
-    xml_to_prufer('test.xml')

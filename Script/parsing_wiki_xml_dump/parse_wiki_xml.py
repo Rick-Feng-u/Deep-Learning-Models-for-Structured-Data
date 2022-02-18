@@ -6,9 +6,6 @@ import os
 
 start_time = time.time()
 
-FILE_PATH = 'enwiki-20220201-pages-articles-multistream1.xml'
-CLEANED_XML_OUTPUT_PATH = 'Cleaned_wiki_folder'
-
 def hms_string(sec_elapsed):
     
     h = int(sec_elapsed / (60 * 60))
@@ -40,11 +37,13 @@ def indent(elem, level=0):
             elem.tail = j
     return elem
 
-def WikiReader():
+def WikiReader(FILE_PATH, OUTPUT_PATH):
     totalCount = 0
     title = None
     
-    for event, elem in etree.iterparse(FILE_PATH, events=('start', 'end')):
+    INPUT_PATH = os.path.join(FILE_PATH, 'enwiki-20220201-pages-articles-multistream1.xml')
+    
+    for event, elem in etree.iterparse(INPUT_PATH, events=('start', 'end')):
         tage = tag_name(elem.tag)
         
         if event == 'start':
@@ -88,7 +87,7 @@ def WikiReader():
                             sub_5_title = ET.SubElement(sub_4_title, current_sub_5_title)
                 
                 tree = ET.ElementTree(indent(root))
-                xml_path = os.path.join(CLEANED_XML_OUTPUT_PATH, title_ + ".xml")
+                xml_path = os.path.join(OUTPUT_PATH, title_ + ".xml")
                 tree.write(xml_path, xml_declaration=True, encoding='utf-8')
                       
             elif tage == 'page':
@@ -102,5 +101,3 @@ def WikiReader():
 elapsed_time = time.time() - start_time
 print("Elapsed time: {}".format(hms_string(elapsed_time)))
 
-if __name__ == "__main__":
-    WikiReader()
