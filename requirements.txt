@@ -71,3 +71,5 @@ Werkzeug==2.0.1
 wincertstore==0.2
 wrapt==1.12.1
 zipp==3.5.0
+
+spacy~=3.2.3
