@@ -1,4 +1,4 @@
-import xml.etree.ElementTree as ET
+import xml.etree.cElementTree as ET
 import matplotlib.pyplot as plt
 import networkx as nx
 import json
@@ -29,7 +29,10 @@ def xml_to_prufer(xml_path) -> (list):
         if(bool(elem.attrib)):
             previous_whole = elem.tag + " " + json.dumps(elem.attrib)
         else:
-            previous_whole = elem.tag + " " + elem.text
+            if elem.text == None:
+                previous_whole = elem.tag
+            else:
+                previous_whole = elem.tag + " " + elem.text
         if(previous_whole not in word_mapping_whole):
             word_mapping_whole[previous_whole] = len(word_mapping_whole)
             
@@ -39,8 +42,12 @@ def xml_to_prufer(xml_path) -> (list):
             #print(neighbour.tag, neighbour.attrib)
             if(bool(neighbour.attrib)):
                 current_whole = neighbour.tag + " " + json.dumps(neighbour.attrib)
+
             else:
-                current_whole = neighbour.tag + " " + neighbour.text
+                if neighbour.text == None:
+                    current_whole = neighbour.tag
+                else:
+                    current_whole = neighbour.tag + " " + neighbour.text
             if(current_whole not in word_mapping_whole):
                 word_mapping_whole[current_whole] = len(word_mapping_whole)
             elif(current_whole in word_mapping_whole):
@@ -49,11 +56,14 @@ def xml_to_prufer(xml_path) -> (list):
             
     #print(edges)
     nx_tree = nx.Graph(edges)
-    pos = pos = graphviz_layout(nx_tree, prog="dot")
-    nx.draw(nx_tree, pos)
-    plt.show()
-    
-    sequence = nx.to_prufer_sequence(nx_tree)
+    #pos = pos = graphviz_layout(nx_tree, prog="dot")
+    #nx.draw(nx_tree, pos)
+    #plt.show()
+
+    if nx_tree.size() > 2:
+        sequence = nx.to_prufer_sequence(nx_tree)
+    else:
+        return None
     #print(sequence)
 
     output_sequence = []
