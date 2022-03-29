@@ -1,5 +1,4 @@
 import os.path
-
 import spacy
 
 nlp = spacy.load("en_core_web_lg")
@@ -32,8 +31,10 @@ class sequence:
                     if sim > 0.8:
                         self.num_count_of_one_element[key] += 1
                         if sim < 1:
-                            [key if value == element else value for value in seq]
-                            print("new sim")
+                            print(element + " " + key + "\n")
+                            seq = list(map(lambda x: x.replace(element, key), seq))
+                            print(seq)
+                            print("\n")
                         is_sim = True
                         break
 
@@ -42,7 +43,6 @@ class sequence:
                     self.num_count_of_one_element[element] = 1
                     self.element[self.size_of_index] = element
                     self.size_of_index += 1
-                    print("not new sim")
 
             else:
                 self.num_count_of_one_element[element] += 1
