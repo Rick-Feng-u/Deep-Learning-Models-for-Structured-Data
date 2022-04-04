@@ -16,33 +16,50 @@ class sequence:
         self.size_of_index = 2
         self.highest_length = 0
 
-    def add_sequence(self, seq):
+    def add_sequence_input(self, seq):
         length = len(seq)
         if length > self.highest_length:
             self.highest_length = length
 
+        seq = [s.strip() for s in seq]
         for element in seq:
             if element not in self.index:
                 is_sim = False
                 for key in self.index:
                     s1 = nlp(element)
                     s2 = nlp(key)
-                    sim = s1.similarity(s2)
-                    if sim > 0.8:
-                        self.num_count_of_one_element[key] += 1
-                        if sim < 1:
-                            print(element + " " + key + "\n")
-                            seq = list(map(lambda x: x.replace(element, key), seq))
-                            print(seq)
-                            print("\n")
-                        is_sim = True
-                        break
+                    if element and key and s1.vector_norm and s2.vector_norm:
+                        sim = s1.similarity(s2)
+                        if sim > 0.8:
+                            self.num_count_of_one_element[key] += 1
+                            for i, n in enumerate(seq):
+                                if n == element:
+                                    seq[i] = key
+                            is_sim = True
+                            break
 
                 if not is_sim:
                     self.index[element] = self.size_of_index
                     self.num_count_of_one_element[element] = 1
                     self.element[self.size_of_index] = element
                     self.size_of_index += 1
+
+            else:
+                self.num_count_of_one_element[element] += 1
+
+        return seq
+
+    def add_sequence_output(self, seq):
+        length = len(seq)
+        if length > self.highest_length:
+            self.highest_length = length
+
+        for element in seq:
+            if element not in self.index:
+                self.index[element] = self.size_of_index
+                self.num_count_of_one_element[element] = 1
+                self.element[self.size_of_index] = element
+                self.size_of_index += 1
 
             else:
                 self.num_count_of_one_element[element] += 1
